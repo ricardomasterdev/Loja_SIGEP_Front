@@ -1,0 +1,21 @@
+/* src/components/Sidebar.css */
+
+/* Largura quando expandido */
+.sidebar-expanded {
+    width: 16rem;
+    transition: width 0.2s ease;
+  }
+  
+  /* Largura quando colapsado */
+  .sidebar-collapsed {
+    width: 4rem;
+    transition: width 0.2s ease;
+  }
+  
+  /* Ajuste de overflow se quiser esconder texto no colapso */
+  .sidebar-collapsed .nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

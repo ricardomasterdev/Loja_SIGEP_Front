@@ -1,0 +1,28 @@
+/* src/App.css */
+.app-container {
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .sidebar-collapsed {
+    width: 4rem !important;
+  }
+  
+  .sidebar-expanded {
+    width: 16rem !important;
+  }
+  
+  .content-area {
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  /* opcional: estilizar scrollbar */
+  .content-area::-webkit-scrollbar {
+    width: 6px;
+  }
+  .content-area::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgba(0,0,0,0.2);
+  }
+  
