@@ -42,13 +42,13 @@ export default function Home() {
       </div>
 
       {/* Exibição de usuário e perfil */}
-      <h4>
+      <h>
         Usuário: <strong>{username}</strong>
-      </h4>
+      </h><br></br>
       {profile && (
-        <h5>
-          Perfil: {profile}
-        </h5>
+        <h>
+          Perfil: <strong>{profile}</strong>
+        </h>
       )}
     </div>
   );
