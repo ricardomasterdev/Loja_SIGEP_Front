@@ -7,18 +7,18 @@ export default function ProtectedRoute({ requiredRole = 'ROLE_ADMIN' }) {
   const token = localStorage.getItem('token');
   if (!token) return <Navigate to="/login" replace />;
 
-  let payload;
   try {
-    payload = jwtDecode(token);
+    const { roles } = jwtDecode(token);
+    if (!Array.isArray(roles) || !roles.includes(requiredRole)) {
+      // sem permissão → login
+      return <Navigate to="/login" replace />;
+    }
   } catch {
+    // token inválido ou expirado
     localStorage.clear();
     return <Navigate to="/login" replace />;
   }
 
-  const roles = Array.isArray(payload.roles) ? payload.roles : [];
-  if (!roles.includes(requiredRole)) {
-    return <Navigate to="/login" replace />;
-  }
-
+  // tudo OK → renderiza Outlet (AppLayout e, depois, Home/Produtos/Vendas)
   return <Outlet />;
 }
