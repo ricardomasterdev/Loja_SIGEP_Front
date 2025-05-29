@@ -1,4 +1,3 @@
-// src/pages/VendaIncluir.jsx
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -7,7 +6,7 @@ import {
   Col,
   Card,
   Modal,
-  Form // <— importado para o picker
+  Form
 } from 'react-bootstrap';
 import { FaCheckCircle } from 'react-icons/fa';
 import { useNavigate, useMatch } from 'react-router-dom';
@@ -35,11 +34,9 @@ export default function VendaIncluir() {
   const [alertMessage, setAlertMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // --- Novo estado para dataPedido, default = agora em formato compatível com <input type="datetime-local">
   const [dataPedido, setDataPedido] = useState(() => {
     const now = new Date();
-    // slice para "YYYY-MM-DDTHH:mm"
-    return now.toISOString().slice(0,16);
+    return now.toISOString().slice(0, 10); // "YYYY-MM-DD"
   });
 
   useEffect(() => {
@@ -51,9 +48,8 @@ export default function VendaIncluir() {
       fetchSaleById(id)
         .then(data => {
           setCliente(data.cliente);
-          // popula dataPedido com o valor vindo do back (converte ISO→"YYYY-MM-DDTHH:mm")
           if (data.dataPedido) {
-            setDataPedido(new Date(data.dataPedido).toISOString().slice(0,16));
+            setDataPedido(new Date(data.dataPedido).toISOString().slice(0, 10));
           }
           setItems(
             data.produtos.map(p => {
@@ -115,13 +111,12 @@ export default function VendaIncluir() {
       return;
     }
 
-    // converte de "YYYY-MM-DDTHH:mm" → ISO completo
     const isoDate = new Date(dataPedido).toISOString();
 
     const payload = {
       cliente,
       valorTotal,
-      dataPedido: isoDate,       // <-- inclui dataPedido
+      dataPedido: isoDate,
       produtos: items.map(it => ({
         produtoId: it.produtoId,
         quantidade: it.quantidade,
@@ -129,7 +124,7 @@ export default function VendaIncluir() {
       }))
     };
 
-    console.log('🛰️ Enviando payload de venda:', payload); // log de debug
+    console.log('🛰️ Enviando payload de venda:', payload);
 
     if (isEdit) {
       updateSale({ id, ...payload })
@@ -161,11 +156,10 @@ export default function VendaIncluir() {
       <Card className="p-3 mb-4">
         <CustomerInput value={cliente} onChange={setCliente} />
 
-        {/* Picker de data/hora do pedido */}
         <Form.Group className="mb-3" controlId="dataPedido">
           <Form.Label>Data do Pedido</Form.Label>
           <Form.Control
-            type="datetime-local"
+            type="date"
             value={dataPedido}
             onChange={e => setDataPedido(e.target.value)}
           />
@@ -212,7 +206,6 @@ export default function VendaIncluir() {
           }))}
         />
 
-        {/* Modal de Validação */}
         <Modal show={showAlert} onHide={() => setShowAlert(false)} centered>
           <Modal.Header closeButton>
             <Modal.Title>Atenção</Modal.Title>
@@ -225,7 +218,6 @@ export default function VendaIncluir() {
           </Modal.Footer>
         </Modal>
 
-        {/* Modal de Sucesso */}
         <Modal show={showSuccess} onHide={handleSuccessClose} centered>
           <Modal.Header closeButton style={{ backgroundColor: '#d4edda' }}>
             <Modal.Title className="text-success">
