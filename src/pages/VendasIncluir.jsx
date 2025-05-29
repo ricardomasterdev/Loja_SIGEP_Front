@@ -36,7 +36,8 @@ export default function VendaIncluir() {
 
   const [dataPedido, setDataPedido] = useState(() => {
     const now = new Date();
-    return now.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    return localDate.toISOString().slice(0, 10);
   });
 
   useEffect(() => {
@@ -49,7 +50,9 @@ export default function VendaIncluir() {
         .then(data => {
           setCliente(data.cliente);
           if (data.dataPedido) {
-            setDataPedido(new Date(data.dataPedido).toISOString().slice(0, 10));
+            const pedidoDate = new Date(data.dataPedido);
+            const localDate = new Date(pedidoDate.getTime() - pedidoDate.getTimezoneOffset() * 60000);
+            setDataPedido(localDate.toISOString().slice(0, 10));
           }
           setItems(
             data.produtos.map(p => {
@@ -111,7 +114,8 @@ export default function VendaIncluir() {
       return;
     }
 
-    const isoDate = new Date(dataPedido).toISOString();
+    const selectedDate = new Date(dataPedido + 'T00:00:00-03:00');
+    const isoDate = selectedDate.toISOString();
 
     const payload = {
       cliente,
@@ -124,25 +128,19 @@ export default function VendaIncluir() {
       }))
     };
 
-    console.log('🛰️ Enviando payload de venda:', payload);
+    console.log('🛰️ Enviando payload de venda:', JSON.stringify(payload, null, 2));
 
-    if (isEdit) {
-      updateSale({ id, ...payload })
-        .then(() => setShowSuccess(true))
-        .catch(err => {
-          console.error('Erro ao atualizar venda:', err);
-          setAlertMessage('Excedido Estoque disponível.');
-          setShowAlert(true);
-        });
-    } else {
-      createSale(payload)
-        .then(() => setShowSuccess(true))
-        .catch(err => {
-          console.error('Erro ao criar venda:', err);
-          setAlertMessage('Erro ao registrar a venda.');
-          setShowAlert(true);
-        });
-    }
+    const operation = isEdit
+      ? updateSale({ id, ...payload })
+      : createSale(payload);
+
+    operation
+      .then(() => setShowSuccess(true))
+      .catch(err => {
+        console.error('Erro ao salvar venda:', err);
+        setAlertMessage('Erro ao registrar a venda.');
+        setShowAlert(true);
+      });
   };
 
   const handleSuccessClose = () => {
