@@ -1,4 +1,4 @@
-# Frontend - SIGEPLoja
+# Frontend - Sistema Loja  Base
 
 Este documento descreve como preparar o ambiente de desenvolvimento para o frontend React do projeto SIGEPLoja.
 
